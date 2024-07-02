@@ -1,0 +1,385 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Execution Report</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 80%;
+            margin: 20px auto;
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+        }
+        .info-chart-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .flex-container {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+        }
+        .flex-container > div {
+            border: 1px solid #ddd;
+            padding: 10px 20px;
+            margin: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #d0e0e3;
+            border-radius: 15px;
+            flex: 1;
+            text-align: center;
+        }
+        .info-box p {
+            margin: 5px 0;
+        }
+        .info-box .number {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .flow-column  {
+            width: auto;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .flow-item {
+            cursor: pointer;
+            padding: 10px;
+            margin-bottom: 5px;
+            background-color: #f9f9f9;
+            border-left: 5px solid transparent;
+            transition: background-color 0.3s;
+        }
+        .flow-item:hover {
+            background-color: #e9ecef;
+        }
+        .flow-item.completed {
+            border-left-color: #28a745; /* Green for completed */
+        }
+        .flow-item.failed {
+            border-left-color: #dc3545; /* Red for failed */
+        }
+        .flow-item.untested {
+            border-left-color: #ffc107; /* Yellow for untested */
+        }
+        .details {
+            display: none;
+            margin-left: 20px;
+            border-left: 2px solid #ccc;
+            padding-left: 10px;
+            margin-top: 5px;
+        }
+        .filters {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            width: 100%;
+        }
+        .filter-btn {
+            padding: 8px 16px;
+            margin-left: 5px;
+            cursor: pointer;
+            border: 1px solid #ddd;
+            background-color: #f2f2f2;
+            transition: background-color 0.3s;
+            border-radius: 5px;
+        }
+        .filter-btn:hover {
+            background-color: #ddd;
+        }
+        .search-box {
+            flex: 1;
+            display: flex;
+            justify-content: flex-end;
+        }
+        .search-input {
+            padding: 8px;
+            width: 200px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        footer {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 0.9em;
+            color: #777;
+        }
+        h1, h3 {
+            color: #333;
+        }
+        .horizontal-bar {
+            width: auto;
+            height: 20px;
+            display: flex;
+            border: 1px solid #ddd;
+            margin: 15px 0;
+            position: relative;
+            border-radius: 5px;
+        }
+        .bar-segment {
+            height: 100%;
+            position: relative;
+        }
+        .bar-segment.passed {
+            background-color: #28a745;
+        }
+        .bar-segment.failed {
+            background-color: #dc3545;
+        }
+        .bar-segment.untested {
+            background-color: #eeeeee;
+        }
+        .bar-segment span {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            color: white;
+            font-weight: bold;
+        }
+    </style>
+    <script>
+        function toggleDetails(id) {
+            var x = document.getElementById(id);
+            if (x.style.display === "none") {
+                x.style.display = "block";
+            } else {
+                x.style.display = "none";
+            }
+        }
+
+        function filterFlow(status) {
+            var items = document.getElementsByClassName('flow-item');
+            for (var i = 0; i < items.length; i++) {
+                if (status === 'all') {
+                    items[i].style.display = 'block';
+                } else if (items[i].classList.contains(status)) {
+                    items[i].style.display = 'block';
+                } else {
+                    items[i].style.display = 'none';
+                }
+            }
+        }
+
+        function searchFlow() {
+            var input, filter, items, item, txtValue;
+            input = document.getElementById('searchInput');
+            filter = input.value.toLowerCase();
+            items = document.getElementsByClassName('flow-item');
+            for (var i = 0; i < items.length; i++) {
+                item = items[i];
+                txtValue = item.textContent || item.innerText;
+                if (txtValue.toLowerCase().indexOf(filter) > -1) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            }
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>Test Execution Report</h1>
+        <h3>com.saucelabs.mydemoapp.rn</h3>
+        <div class="info-chart-container">
+            <div class="flex-container">
+                <div class="info-box" >
+                    <p class="number">8</p>
+                    <p><b>Test Cases</b></p>
+                </div>
+                <div class="info-box" style="background-color: #28a745; color: #ffffff;">
+                    <p class="number">7</p>
+                    <p><b>Success</b></p>
+                </div>
+                <div class="info-box" style="background-color: #dc3545; color: #ffffff;">
+                    <p class="number">1</p>
+                    <p><b>Failed</b></p>
+                </div>
+                <div class="info-box" style="background-color: #eeeeee;">
+                    <p class="number">0</p>
+                    <p><b>Untested</b></p>
+                </div>
+            </div>
+        </div>
+        <div class="horizontal-bar">
+            <div class="bar-segment passed" style="width: 87.5%">
+                <span>87.50%</span>
+            </div>
+            <div class="bar-segment failed" style="width: 12.5%">
+                <span>12.50%</span>
+            </div>
+            
+        </div>
+        <h3><b>Total Duration: 45258 ms</b></h3>
+        <div class="filters">
+            <div>
+                <button class="filter-btn" onclick="filterFlow('all')">All</button>
+                <button class="filter-btn" onclick="filterFlow('completed')">Success</button>
+                <button class="filter-btn" onclick="filterFlow('failed')">Failed</button>
+                <button class="filter-btn" onclick="filterFlow('untested')">Untested</button>
+            </div>
+            <div class="search-box">
+                <input type="text" id="searchInput" class="search-input" onkeyup="searchFlow()" placeholder="Search for steps...">
+            </div>
+        </div>
+        <div class="flow-column">
+            
+    <div class="flow-item completed" onclick="toggleDetails('details-0')">
+        ✅ applyConfigurationCommand on ""
+        <div class="details" id="details-0" style="display:none;">
+            <p><b>Step Detail</b></p>
+            <p><b>Command:</b> applyConfigurationCommand</p>
+            <p><b>Details:</b> {
+    "config": {
+        "appId": "com.saucelabs.mydemoapp.rn"
+    }
+}</p>
+            <p><b>Status:</b> COMPLETED</p>
+            <p><b>Timestamp:</b> 2024-06-12 16:27:11</p>
+            <p><b>Duration:</b> 4 ms</p>
+        </div>
+    </div>
+    
+    <div class="flow-item completed" onclick="toggleDetails('details-1')">
+        ✅ launchAppCommand on ""
+        <div class="details" id="details-1" style="display:none;">
+            <p><b>Step Detail</b></p>
+            <p><b>Command:</b> launchAppCommand</p>
+            <p><b>Details:</b> {
+    "appId": "com.saucelabs.mydemoapp.rn"
+}</p>
+            <p><b>Status:</b> COMPLETED</p>
+            <p><b>Timestamp:</b> 2024-06-12 16:27:11</p>
+            <p><b>Duration:</b> 6470 ms</p>
+        </div>
+    </div>
+    
+    <div class="flow-item completed" onclick="toggleDetails('details-2')">
+        ✅ tapOnElement on "open menu"
+        <div class="details" id="details-2" style="display:none;">
+            <p><b>Step Detail</b></p>
+            <p><b>Command:</b> tapOnElement</p>
+            <p><b>Details:</b> {
+    "selector": {
+        "textRegex": "open menu",
+        "optional": false
+    },
+    "retryIfNoChange": true,
+    "waitUntilVisible": false,
+    "longPress": false
+}</p>
+            <p><b>Status:</b> COMPLETED</p>
+            <p><b>Timestamp:</b> 2024-06-12 16:27:17</p>
+            <p><b>Duration:</b> 16791 ms</p>
+        </div>
+    </div>
+    
+    <div class="flow-item completed" onclick="toggleDetails('details-3')">
+        ✅ tapOnElement on "menu item log in"
+        <div class="details" id="details-3" style="display:none;">
+            <p><b>Step Detail</b></p>
+            <p><b>Command:</b> tapOnElement</p>
+            <p><b>Details:</b> {
+    "selector": {
+        "textRegex": "menu item log in",
+        "optional": false
+    },
+    "retryIfNoChange": true,
+    "waitUntilVisible": false,
+    "longPress": false
+}</p>
+            <p><b>Status:</b> COMPLETED</p>
+            <p><b>Timestamp:</b> 2024-06-12 16:27:34</p>
+            <p><b>Duration:</b> 5920 ms</p>
+        </div>
+    </div>
+    
+    <div class="flow-item completed" onclick="toggleDetails('details-4')">
+        ✅ tapOnElement on "Username input field"
+        <div class="details" id="details-4" style="display:none;">
+            <p><b>Step Detail</b></p>
+            <p><b>Command:</b> tapOnElement</p>
+            <p><b>Details:</b> {
+    "selector": {
+        "textRegex": "Username input field",
+        "optional": false
+    },
+    "retryIfNoChange": true,
+    "waitUntilVisible": false,
+    "longPress": false
+}</p>
+            <p><b>Status:</b> COMPLETED</p>
+            <p><b>Timestamp:</b> 2024-06-12 16:27:40</p>
+            <p><b>Duration:</b> 3612 ms</p>
+        </div>
+    </div>
+    
+    <div class="flow-item completed" onclick="toggleDetails('details-5')">
+        ✅ hideKeyboardCommand on ""
+        <div class="details" id="details-5" style="display:none;">
+            <p><b>Step Detail</b></p>
+            <p><b>Command:</b> hideKeyboardCommand</p>
+            <p><b>Details:</b> {}</p>
+            <p><b>Status:</b> COMPLETED</p>
+            <p><b>Timestamp:</b> 2024-06-12 16:27:44</p>
+            <p><b>Duration:</b> 7051 ms</p>
+        </div>
+    </div>
+    
+    <div class="flow-item completed" onclick="toggleDetails('details-6')">
+        ✅ inputTextCommand on ""
+        <div class="details" id="details-6" style="display:none;">
+            <p><b>Step Detail</b></p>
+            <p><b>Command:</b> inputTextCommand</p>
+            <p><b>Details:</b> {
+    "text": "bob@example.com"
+}</p>
+            <p><b>Status:</b> COMPLETED</p>
+            <p><b>Timestamp:</b> 2024-06-12 16:27:51</p>
+            <p><b>Duration:</b> 5410 ms</p>
+        </div>
+    </div>
+    
+    <div class="flow-item failed" onclick="toggleDetails('details-7')">
+        ❌ tapOnElement on "Password input field"
+        <div class="details" id="details-7" style="display:none;">
+            <p><b>Step Detail</b></p>
+            <p><b>Command:</b> tapOnElement</p>
+            <p><b>Details:</b> {
+    "selector": {
+        "textRegex": "Password input field",
+        "optional": false
+    },
+    "retryIfNoChange": true,
+    "waitUntilVisible": false,
+    "longPress": false
+}</p>
+            <p><b>Status:</b> FAILED</p>
+            <p><b>Timestamp:</b> 2024-06-12 16:27:56</p>
+            <p><b>Duration:</b> 17376 ms</p>
+        </div>
+    </div>
+    
+        </div>
+        <footer>
+            <p>Generated on 2024-07-02 11:04:23</p>
+        </footer>
+    </div>
+</body>
+</html>
