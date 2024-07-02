@@ -5,7 +5,7 @@ This repository provides a custom reporting solution for mobile testing using Ma
 ## Introduction
 
 Maestro Dev is a mobile testing platform for automating tests across various devices and platforms. This repository demonstrates how to generate custom reports for your mobile testing results using Python.
-![Logo OpenAI](https://openai.com/favicon-32x32.png)
+![Logo OpenAI](Image.png)
 ## Features
 
 - **Integration with Maestro Dev**: Automate mobile testing and capture test results.
